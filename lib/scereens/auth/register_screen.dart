@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   late TextEditingController _phoneNumberController;
 
   File? imageFile;
-  String ? url;
+  // String ? url;
 
   @override
   void initState() {
@@ -354,42 +354,84 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
+  // void pickImageWithCamera() async {
+  //   PickedFile? pickedFile = await ImagePicker()
+  //       .getImage(source: ImageSource.camera, maxWidth: 1080, maxHeight: 1080);
+  //   // setState(() {
+  //   //   imageFile = File(pickedFile!.path);
+  //   // });
+  //   cropImage(pickedFile!.path);
+  //   Navigator.pop(context);
+  // }
+  //
+  // void pickImageWithGallary() async {
+  //   PickedFile? pickedFile = await ImagePicker()
+  //       .getImage(source: ImageSource.gallery, maxWidth: 1080, maxHeight: 1080);
+  //   // setState(() {
+  //   //   imageFile = File(pickedFile!.path);
+  //   // });
+  //   cropImage(pickedFile!.path);
+  //   Navigator.pop(context);
+  //
+  // }
+  //
+  //
+  //
+  // void cropImage(filePath) async {
+  //   File? cropImage = await ImageCropper().cropImage(
+  //     sourcePath: filePath,
+  //     maxHeight: 1080,
+  //     maxWidth: 1080,
+  //   );
+  //   if(cropImage != null){
+  //    setState(() {
+  //      imageFile =cropImage;
+  //    });
+  //   }
+  // }
   void pickImageWithCamera() async {
-    PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.camera, maxWidth: 1080, maxHeight: 1080);
+    try {
+      PickedFile? pickedFile = await ImagePicker().getImage(
+          source: ImageSource.camera, maxWidth: 1080, maxHeight: 1080);
+      cropImage(pickedFile!.path);
+      Navigator.pop(context);
+    } catch (error) {
+      print(error);
+      //
+      // GlobalMethods.showErrorDialog(error: '$error', context: context);
+    }
+
     // setState(() {
     //   imageFile = File(pickedFile!.path);
     // });
-    cropImage(pickedFile!.path);
-    Navigator.pop(context);
+
+
   }
 
   void pickImageWithGallary() async {
-    PickedFile? pickedFile = await ImagePicker()
-        .getImage(source: ImageSource.gallery, maxWidth: 1080, maxHeight: 1080);
+    try {
+      PickedFile? pickedFile = await ImagePicker().getImage(
+          source: ImageSource.gallery, maxWidth: 1080, maxHeight: 1080);
+      cropImage(pickedFile!.path);
+    } catch (error) {
+      //
+    }
     // setState(() {
     //   imageFile = File(pickedFile!.path);
     // });
-    cropImage(pickedFile!.path);
+
     Navigator.pop(context);
-
   }
-
-
 
   void cropImage(filePath) async {
     File? cropImage = await ImageCropper().cropImage(
-      sourcePath: filePath,
-      maxHeight: 1080,
-      maxWidth: 1080,
-    );
-    if(cropImage != null){
-     setState(() {
-       imageFile =cropImage;
-     });
+        sourcePath: filePath, maxHeight: 1080, maxWidth: 1080);
+    if (cropImage != null) {
+      setState(() {
+        imageFile = cropImage;
+      });
     }
   }
-
 
   void showImageDialog() {
     showDialog(
@@ -562,9 +604,9 @@ class _RegisterScreenState extends State<RegisterScreen>
           .createUserWithEmailAndPassword(email: email, password: password);
       final User? user =  _firebaseAuth.currentUser;
       final uid= user!.uid;
-      final ref = FirebaseStorage.instance.ref().child('userImage').child(uid + '.jpg');
-      await ref.putFile(imageFile!);
-      url =await ref.getDownloadURL();
+      // final ref = FirebaseStorage.instance.ref().child('userImage').child(uid + '.jpg');
+      // await ref.putFile(imageFile!);
+      // url =await ref.getDownloadURL();
       FirebaseFirestore.instance.collection('users').doc(uid).set(
         {
           'id':uid,
@@ -573,7 +615,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           'phoneNumber':_phoneNumberController.text,
           'createAt':Timestamp.now(),
           'job':_jobsList.text,
-          'userImageUrl':url,
+          // 'userImageUrl':url,
         },
       );
       userCredential.user?.sendEmailVerification();

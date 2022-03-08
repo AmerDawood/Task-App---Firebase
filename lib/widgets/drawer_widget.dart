@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tasks_app/controller/fb_controller/fb_auth_controller.dart';
 
+import '../scereens/profile_screen.dart';
 import 'listTile_widget.dart';
 
 class DrawerWidget extends StatelessWidget {
@@ -13,6 +15,9 @@ class DrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    final User? user =_firebaseAuth.currentUser;
+    final uid =user!.uid;
     return Drawer(
       child: ListView(
         children: [
@@ -40,13 +45,18 @@ class DrawerWidget extends StatelessWidget {
                   ),),
                 ],
               )),
+
           listTileWidget( fct: (){
             Navigator.pushReplacementNamed(context, '/app_screen');
           },text: 'All tasks',icon: Icon(Icons.note_add,color: Colors.black,),),
-          listTileWidget( fct: (){
-            Navigator.pushReplacementNamed(context, '/profile_screen');
+          listTileWidget(
 
-          },text: 'My account',icon: Icon(Icons.person,color: Colors.black,),),
+            fct: () {
+              Navigator.pushReplacement(context, MaterialPageRoute(
+                builder:(context) {
+                  return ProfileScreen(userId:uid);
+                },));},
+            text: 'My account',icon: Icon(Icons.person,color: Colors.black,),),
           listTileWidget( fct: (){
             Navigator.pushReplacementNamed(context, '/registered_worker_screen');
 

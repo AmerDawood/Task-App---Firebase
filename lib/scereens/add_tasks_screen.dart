@@ -1,11 +1,14 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_app/constanse/constanse.dart';
 import 'package:tasks_app/widgets/drawer_widget.dart';
 import 'package:tasks_app/widgets/text_field_in_addTask.dart';
 import 'package:tasks_app/widgets/text_in_add_task.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTasks extends StatefulWidget {
   @override
@@ -13,12 +16,18 @@ class AddTasks extends StatefulWidget {
 }
 
 class _AddTasksState extends State<AddTasks> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   late TextEditingController _taskCategoryController;
   late TextEditingController _tasktitleController;
   late TextEditingController _descriptionController;
 
   late TextEditingController _dedLineController;
    DateTime? picked;
+   Timestamp? _deadlineDateTimeStamp;
+  final _formKey = GlobalKey<FormState>();
+
+
 
   @override
   void initState() {
@@ -39,6 +48,41 @@ class _AddTasksState extends State<AddTasks> {
     _tasktitleController.dispose();
     super.dispose();
   }
+
+
+
+
+
+
+
+
+  void uploadFct() async {
+    User? user = _firebaseAuth.currentUser;
+    String _uid = user!.uid;
+    // final isValid = _formKey.currentState!.validate();
+    // FocusScope.of(context).unfocus();
+
+    final taskID = Uuid().v4();
+     // if(isValid){
+       await FirebaseFirestore.instance.collection('tasks').doc(taskID).set({
+         'taskId': taskID,
+         'uploadedBy': _uid,
+         'taskTitle': _tasktitleController.text,
+         'taskDescription': _descriptionController.text,
+         'deadlineDate': _dedLineController.text,
+         'deadlineDateTimeStamp': _deadlineDateTimeStamp,
+         'taskCategory': _taskCategoryController.text,
+         'createdAt': Timestamp.now(),
+       });
+     // }else{
+     //   print('lfdvlb');
+     // }
+
+
+
+
+
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +106,7 @@ class _AddTasksState extends State<AddTasks> {
                   child: Text(
                     'All field are required',
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: Colors.blue.shade900,
                     ),
@@ -91,7 +135,7 @@ class _AddTasksState extends State<AddTasks> {
                 controller: _tasktitleController,
                 text: '',
                 fct: () {},
-                maxLength: 1,
+                maxLength: 30,
                 maxLine: 1,
               ),
               textInAddTasks(
@@ -102,7 +146,7 @@ class _AddTasksState extends State<AddTasks> {
                 controller: _descriptionController,
                 text: '',
                 fct: () {},
-                maxLength: 1,
+                maxLength:400,
                 maxLine: 4,
               ),
               textInAddTasks(
@@ -119,7 +163,7 @@ class _AddTasksState extends State<AddTasks> {
                 maxLine: 1,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
+                padding: const EdgeInsets.only(left: 50,bottom: 20, right: 50, top: 10),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red.shade400,
@@ -128,7 +172,9 @@ class _AddTasksState extends State<AddTasks> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed:(){
+                    uploadFct();
+                  },
                   child: Text(
                     'Update',
                     style: TextStyle(
@@ -154,6 +200,8 @@ class _AddTasksState extends State<AddTasks> {
 
       if(picked != null){
         setState(() {
+          _deadlineDateTimeStamp = Timestamp.fromMicrosecondsSinceEpoch(
+              picked!.microsecondsSinceEpoch);
           _dedLineController.text = '${picked!.year}'+' - '+'${picked!.month}'+' - '+'${picked!.day}';
         });
       }

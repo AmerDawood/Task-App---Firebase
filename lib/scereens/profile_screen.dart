@@ -1,17 +1,67 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final String userId;
 
+  ProfileScreen({required this.userId});
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+  bool _isLoading = false;
+  String email ='';
+  String fullName='';
+  String phoneNumber='';
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  bool isSameUser =true;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserData();
+  }
+
+
+
+  void getUserData()async{
+    _isLoading = true;
+
+    try{
+      final DocumentSnapshot userDoc =
+      await FirebaseFirestore.instance.collection('users').doc(widget.userId).get();
+      if (userDoc == null){
+        return;
+      }else{
+        setState(() {
+          email = userDoc.get('email');
+          fullName = userDoc.get('fullName');
+          phoneNumber =userDoc.get('phoneNumber');
+
+        });
+        User?user =_firebaseAuth.currentUser;
+        String uid= user!.uid;
+        setState(() {
+          // isSameUser =true;
+          isSameUser =uid==widget.userId;
+        });
+        print('eee $isSameUser');
+      }
+    }catch (e){
+      //
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 80,
                         ),
                         Text(
-                          'Amer Maher Dawood',
+                          fullName,
                           style: TextStyle(
                             fontSize: 25,
                             color: Colors.black,
@@ -55,9 +105,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         Divider(),
                         TextInProfile(text: 'Contact info'),
-                        TextInProfile(text: 'Email : amer@gmail.com'),
-                        TextInProfile(text: ' Phone number : +970-5816'),
-                        Padding(
+                        TextInProfile(text: 'Email : ${email}'),
+                        TextInProfile(text: ' Phone number : ${phoneNumber}'),
+                      SizedBox(height: 30,),
+                        isSameUser?Container():Padding(
                           padding: const EdgeInsets.only(
                               left: 40, right: 40, top: 20),
                           child: Row(
@@ -96,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-                        Divider(),
+                        isSameUser?Container(): Divider(),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 70, right: 70, top: 10),
@@ -156,7 +207,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         
                       ),
-                      child: Image.network(''),
+                      // child: Image.network(''),
                     ),
                   ),
                 ],

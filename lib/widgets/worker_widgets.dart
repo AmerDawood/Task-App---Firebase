@@ -1,16 +1,52 @@
 import 'package:flutter/material.dart';
-class WorkerWidget extends StatelessWidget {
-  const WorkerWidget({
-    Key? key,
-  }) : super(key: key);
 
+import '../scereens/profile_screen.dart';
+class WorkerWidget extends StatefulWidget {
+
+   //
+   // final String name;
+   // final String date;
+   // WorkerWidget({
+   //   required this.name,
+   //   required this.date,
+   //       });
+
+ final String userID;
+ final String userName;
+ final String userEmail;
+ // final DateTime dateOfCreate;
+ final String phoneNumber;
+ final String job;
+ WorkerWidget({
+  required this.phoneNumber,
+  // required this.dateOfCreate,
+  required this.userEmail,
+  required this.userID,
+  required this.userName,
+   required this.job,
+       });
+
+  @override
+  State<WorkerWidget> createState() => _WorkerWidgetState();
+}
+
+class _WorkerWidgetState extends State<WorkerWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 8,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       child: ListTile(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(
+                userId:widget.userID,
+              ),
+            ),
+          );
+        },
         onLongPress: () {
           showDialog(context: context, builder: (context) {
             return AlertDialog(
@@ -49,7 +85,7 @@ class WorkerWidget extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Amer Dawood',
+          widget.userName,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 19,
@@ -66,7 +102,7 @@ class WorkerWidget extends StatelessWidget {
               color: Colors.red,
             ),
             Text(
-              'Monday 22/1/2002',
+              widget.job,
               style: TextStyle(
                 fontSize: 16,
               ),

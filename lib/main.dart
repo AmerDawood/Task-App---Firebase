@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         '/app_screen':(context)=> AppScreen(),
         '/add_tasks_screen':(context)=> AddTasks(),
         '/registered_worker_screen':(context)=> RegisteredWorkerScreen(),
-        '/profile_screen':(context)=> ProfileScreen(),
+        // '/profile_screen':(context)=> ProfileScreen(),
         '/detail_screen':(context)=> DetailScreen(),
       },
     );
