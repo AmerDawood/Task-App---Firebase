@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tasks_app/utils/helpers.dart';
 import 'package:tasks_app/widgets/text_field_widget.dart';
 
+import '../../controller/fb_controller/fb_auth_controller.dart';
+
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({Key? key}) : super(key: key);
 
@@ -113,7 +115,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
                   height: 30,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: ()async =>await performReset(),
                   style: ElevatedButton.styleFrom(
                     primary:Color.fromARGB(252, 135, 134, 112).withOpacity(0.6),
                     minimumSize: Size(0, 55),
@@ -139,5 +141,28 @@ class _ForgetPasswordState extends State<ForgetPassword>
 
 
 
+  Future<void> performReset() async {
+    if (checkData()) {
+      await resetPassword();
+    }
+  }
+
+  bool checkData() {
+    if (_emailController.text.isNotEmpty
+        ) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> resetPassword() async {
+    bool states = await FbAuthController().resetPassword(
+      context: context,
+      email: _emailController.text,
+    );
+    if (states) {
+      Navigator.pushReplacementNamed(context, '/login_screen');
+    }
+  }
 
 }
