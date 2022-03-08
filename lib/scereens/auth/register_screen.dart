@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   late TextEditingController _phoneNumberController;
 
   File? imageFile;
+  String ? url;
 
   @override
   void initState() {
@@ -476,7 +478,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 return InkWell(
                   onTap: () {
                     setState(() {
-                      // _taskCategoryController.text =Constanse.taskCategoryList[index];
+                      _jobsList.text =Constanse.jobsList[index];
                     });
                     Navigator.pop(context);
                   },
@@ -526,6 +528,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         password: _passwordController.text,
         fullName: _fullNameController.text,
         phoneNumber: _phoneNumberController.text,
+        job: _jobsList.text,
       );
     }
   }
@@ -535,7 +538,8 @@ class _RegisterScreenState extends State<RegisterScreen>
     if (_emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty&&
         _fullNameController.text.isNotEmpty&&
-        _phoneNumberController.text.isNotEmpty
+        _phoneNumberController.text.isNotEmpty&&
+        _jobsList.text.isNotEmpty
     ) {
       Navigator.pushReplacementNamed(context, '/login_screen');
       return true;
@@ -549,13 +553,18 @@ class _RegisterScreenState extends State<RegisterScreen>
         required String email,
         required String password,
         required String fullName,
-        required String phoneNumber
+        required String phoneNumber,
+        required String job
       }) async {
     try {
+
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       final User? user =  _firebaseAuth.currentUser;
       final uid= user!.uid;
+      final ref = FirebaseStorage.instance.ref().child('userImage').child(uid + '.jpg');
+      await ref.putFile(imageFile!);
+      url =await ref.getDownloadURL();
       FirebaseFirestore.instance.collection('users').doc(uid).set(
         {
           'id':uid,
@@ -563,6 +572,8 @@ class _RegisterScreenState extends State<RegisterScreen>
           'fullName':_fullNameController.text,
           'phoneNumber':_phoneNumberController.text,
           'createAt':Timestamp.now(),
+          'job':_jobsList.text,
+          'userImageUrl':url,
         },
       );
       userCredential.user?.sendEmailVerification();
