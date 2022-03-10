@@ -358,7 +358,6 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                   SizedBox(
                     height: 10,
                   ),
-
                   Divider(),
                   Padding(
                     padding:
@@ -394,7 +393,6 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                       ],
                     ),
                   ),
-
                   Divider(),
                   AnimatedSwitcher(
                     duration: Duration(milliseconds: 500),
@@ -441,33 +439,52 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                                       children: [
                                         MaterialButton(
                                           onPressed: () async {
-                                          try{
-                                          if(_commentController.text.length<7){
-                                            final _generatedId = Uuid().v4();
-                                            await FirebaseFirestore.instance
-                                                .collection('tasks')
-                                                .doc(widget.taskId)
-                                                .update({
-                                              'taskComments':
-                                              FieldValue.arrayUnion([
-                                                {
-                                                  'userId': widget.uploadBy,
-                                                  'commentId': _generatedId,
-                                                  'name': authorName,
-                                                  'commentBody': _commentController.text,
-                                                  'time': Timestamp.now(),
-                                                }
-                                              ]),
-                                            });
-                                            showSnackBar(context: context, message: 'Comment uploaded successfully ',error: true);
-                                          }else{
-                                            showSnackBar(context: context, message: 'Comment dos\'t  uploaded ',error: false);
-                                          }
-                                            _commentController.clear();
-                                          }catch (e){
-                                            showSnackBar(context: context, message: 'Comment dos\'t uploaded',error: true);
-                                          }
+                                            try {
+                                              if (_commentController
+                                                      .text.length <
+                                                  7) {
+                                                final _generatedId =
+                                                    Uuid().v4();
+                                                await FirebaseFirestore.instance
+                                                    .collection('tasks')
+                                                    .doc(widget.taskId)
+                                                    .update({
+                                                  'taskComments':
+                                                      FieldValue.arrayUnion([
+                                                    {
+                                                      'userId': widget.uploadBy,
+                                                      'commentId': _generatedId,
+                                                      'name': authorName,
+                                                      'commentBody':
+                                                          _commentController
+                                                              .text,
+                                                      'time': Timestamp.now(),
+                                                    }
+                                                  ]),
+                                                });
+                                                showSnackBar(
+                                                    context: context,
+                                                    message:
+                                                        'Comment uploaded successfully ',
+                                                    error: true);
+                                              } else {
+                                                showSnackBar(
+                                                    context: context,
+                                                    message:
+                                                        'Comment dos\'t  uploaded ',
+                                                    error: false);
+                                              }
+                                              _commentController.clear();
+                                              setState(() {
 
+                                              });
+                                            } catch (e) {
+                                              showSnackBar(
+                                                  context: context,
+                                                  message:
+                                                      'Comment dos\'t uploaded',
+                                                  error: true);
+                                            }
                                           },
                                           color: Colors.pink.shade700,
                                           elevation: 10,
@@ -477,7 +494,7 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                                               side: BorderSide.none),
                                           child: const Padding(
                                             padding: EdgeInsets.symmetric(
-                                                vertical: 14,
+                                              vertical: 14,
                                             ),
                                             child: Text(
                                               'Post',
@@ -526,12 +543,51 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                             ),
                           ),
                   ),
-
                   SizedBox(
                     height: 7,
                   ),
                   Divider(),
-                  commentsWidgets(),
+
+                  FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('tasks')
+                          .doc(widget.taskId)
+                          .get(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          if (snapshot.data == null) {
+                            return Container();
+                          }
+                        }
+                        return ListView.separated(
+                            reverse: true,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, index) {
+                              return commentsWidgets(
+                                  name: snapshot.data!['taskComments'][index]
+                                   ['name'],
+                               userId: snapshot.data!['taskComments'][index]
+                                   ['userId'],
+                               commentId: snapshot.data!['taskComments'][index]
+                                   ['commentId'],
+                               description: snapshot.data!['taskComments']
+                                   [index]['commentBody'],
+                              );
+                            },
+                            separatorBuilder: (ctx, index) {
+                              return Divider(
+                                thickness: 1,
+                              );
+                            },
+                            itemCount: snapshot
+                                .data!['taskComments'].length);
+                      })
                 ],
               ),
             ),
@@ -541,3 +597,49 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
     );
   }
 }
+// FutureBuilder<DocumentSnapshot>(
+//     future: FirebaseFirestore.instance
+//         .collection('tasks')
+//         .doc(widget.taskId)
+//         .get(),
+//     builder: (context, snapshot) {
+//       if (snapshot.connectionState ==
+//           ConnectionState.waiting) {
+//         return Center(
+//           child: CircularProgressIndicator(),
+//         );
+//       } else if (snapshot.data == null) {
+//         return ListView.separated(
+//           reverse: true,
+//           shrinkWrap: true,
+//           physics: NeverScrollableScrollPhysics(),
+//           itemBuilder: (ctx, index) {
+//             return commentsWidgets(
+//               name: snapshot.data!['taskComments'][index]
+//                   ['name'],
+//               userId: snapshot.data!['taskComments'][index]
+//                   ['userId'],
+//               commentId: snapshot.data!['taskComments'][index]
+//                   ['commentId'],
+//               description: snapshot.data!['taskComments']
+//                   [index]['commentBody'],
+//             );
+//           },
+//           separatorBuilder:
+//               (BuildContext context, int index) {
+//             return Divider(
+//               thickness: 1,
+//             );
+//           },
+//           itemCount: snapshot.data!['taskComments'].length,
+//         );
+//       } else {
+//         return Center(
+//           child: Text('No comments found'),
+//         );
+//       }
+//       return Center(
+//         child: Text('Something went wrong'),
+//       );
+//     }),
+//
