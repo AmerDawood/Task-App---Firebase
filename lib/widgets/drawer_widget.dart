@@ -78,20 +78,20 @@ class DrawerWidget extends StatelessWidget {
      void logout(context){
       showDialog(context: context, builder: (context) {
         return AlertDialog(
-          title: Row(
-            children: [
-              Image.network('https://image.flaticon.com/icons/png/128/1252/1252006.png',
-              height: 20,
-                width: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Sign out',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
-              ),
-            ],
-          ),
+          // title: Row(
+          //   children: [
+          //     // Image.network('https://image.flaticon.com/icons/png/128/1252/1252006.png',
+          //     // height: 20,
+          //     //   width: 20,
+          //     // ),
+          //     Padding(
+          //       padding: const EdgeInsets.all(8.0),
+          //       child: Text('Sign out',style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold),),
+          //     ),
+          //   ],
+          // ),
           content: Text(
-            'Do you want to sign out',
+            'Do you to sign out?',
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
@@ -103,13 +103,11 @@ class DrawerWidget extends StatelessWidget {
               Navigator.canPop(context) ? Navigator.pop(context):null;
             }, child:Text('Close',style: TextStyle(color: Colors.blue),),),
             TextButton(
-        // onPressed: () async{
-        // await FbAuthController().signOut();
-        // Navigator.pushReplacementNamed(context, '/login_screen');
-        // },
-              onPressed: (){},
+        onPressed: () async{
+        await FbAuthController().signOut();
+        Navigator.pushReplacementNamed(context, '/login_screen');
+        },
               child:Text('Ok',style: TextStyle(color: Colors.red),),),
-
           ],
         );
       },);
