@@ -5,12 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tasks_app/constanse/constanse.dart';
+import 'package:tasks_app/utils/helpers.dart';
 import 'package:tasks_app/widgets/drawer_widget.dart';
 import 'package:tasks_app/widgets/text_field_in_addTask.dart';
 import 'package:tasks_app/widgets/text_in_add_task.dart';
 import 'package:uuid/uuid.dart';
 
-class AddTasks extends StatefulWidget {
+class AddTasks extends StatefulWidget with Helpers{
   @override
   State<AddTasks> createState() => _AddTasksState();
 }
@@ -25,9 +26,9 @@ class _AddTasksState extends State<AddTasks> {
   late TextEditingController _dedLineController;
    DateTime? picked;
    Timestamp? _deadlineDateTimeStamp;
+   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
-
-
+  final isDone =true;
 
   @override
   void initState() {
@@ -48,36 +49,42 @@ class _AddTasksState extends State<AddTasks> {
     _tasktitleController.dispose();
     super.dispose();
   }
-
-
-
-
-
-
-
-
+  //  ----------------------- No Null Value(use if is not empty) -----------------------
   void uploadFct() async {
     User? user = _firebaseAuth.currentUser;
     String _uid = user!.uid;
     // final isValid = _formKey.currentState!.validate();
     // FocusScope.of(context).unfocus();
+    // try{
+    //   setState(() {
+    //     isLoading=true;
+    //   });
+      final taskID = Uuid().v4();
+      await FirebaseFirestore.instance.collection('tasks').doc(taskID).set({
+        'taskId': taskID,
+        'uploadedBy': _uid,
+        'taskTitle': _tasktitleController.text,
+        'taskDescription': _descriptionController.text,
+        'deadlineDate': _dedLineController.text,
+        'deadlineDateTimeStamp': _deadlineDateTimeStamp,
+        'taskCategory': _taskCategoryController.text,
+        'createdAt': Timestamp.now(),
+        'isDone':true,
+      });
+    // }catch (e){
+    // print('Error Catch');
+    // }finally{
+    //  //
+    // }
 
-    final taskID = Uuid().v4();
-     // if(isValid){
-       await FirebaseFirestore.instance.collection('tasks').doc(taskID).set({
-         'taskId': taskID,
-         'uploadedBy': _uid,
-         'taskTitle': _tasktitleController.text,
-         'taskDescription': _descriptionController.text,
-         'deadlineDate': _dedLineController.text,
-         'deadlineDateTimeStamp': _deadlineDateTimeStamp,
-         'taskCategory': _taskCategoryController.text,
-         'createdAt': Timestamp.now(),
-       });
+
      // }else{
      //   print('lfdvlb');
      // }
-
+    _taskCategoryController.clear();
+    _tasktitleController.clear();
+    _dedLineController.clear();
+    _descriptionController.clear();
 
 
 
@@ -164,6 +171,7 @@ class _AddTasksState extends State<AddTasks> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 50,bottom: 20, right: 50, top: 10),
+               //isLoading?CircularProgressIndicator():
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: Colors.red.shade400,
