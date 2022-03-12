@@ -125,7 +125,9 @@ class _LoginScreenState extends State<LoginScreen>
                 text_field_widget(
                   controller: _emailController,
                   enabel: true,
+
                   hintText: "Email",
+
                   prefixIcon: Icon(
                     Icons.email,
                     color: Colors.white70,

@@ -442,9 +442,8 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                                             try {
                                               if (_commentController
                                                       .text.length <
-                                                  7) {
-                                                final _generatedId =
-                                                    Uuid().v4();
+                                                  7 && _commentController.text.length>2) {
+                                                final _generatedId = Uuid().v4();
                                                 await FirebaseFirestore.instance
                                                     .collection('tasks')
                                                     .doc(widget.taskId)
@@ -466,13 +465,13 @@ class _DetailScreenState extends State<DetailScreen> with Helpers {
                                                     context: context,
                                                     message:
                                                         'Comment uploaded successfully ',
-                                                    error: true);
+                                                    error: false);
                                               } else {
                                                 showSnackBar(
                                                     context: context,
                                                     message:
                                                         'Comment dos\'t  uploaded ',
-                                                    error: false);
+                                                    error: true);
                                               }
                                               _commentController.clear();
                                               setState(() {

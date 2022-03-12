@@ -16,15 +16,28 @@ class text_field_widget extends StatelessWidget {
     return TextField(
       enabled:enabel,
       controller: controller,
+      // keyboardType:TextInputType.emailAddress,
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontSize: 23,
+      ),
       decoration: InputDecoration(
+
         enabledBorder: OutlineInputBorder(
+
+
           borderSide: BorderSide(
             width: 2,
             color: Colors.white,
+
           ),
+
           borderRadius: BorderRadius.circular(10),
         ),
         hintText: hintText,
+
+
         hintStyle: TextStyle(
           color: Colors.white70,
           fontSize: 20,
@@ -35,10 +48,12 @@ class text_field_widget extends StatelessWidget {
           color: Colors.white38,
         ),
         focusedBorder: OutlineInputBorder(
+
           borderSide: BorderSide(
             width: 1,
             color: Colors.white38,
           ),
+
           borderRadius: BorderRadius.circular(10),
         ),
       ),

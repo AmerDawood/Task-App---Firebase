@@ -93,7 +93,7 @@ class tasks_widgets extends StatelessWidget with Helpers{
             //https://image.flaticon.com/icons/png/128/850/850960.png
             child: Image.network(
              isDone?
-             'https://image.flaticon.com/icons/png/128/850/850960.png':
+                 'https://cdn.pixabay.com/photo/2014/03/24/17/15/clock-295201_960_720.png':
                 'https://image.flaticon.com/icons/png/128/390/390973.png',
 
             ),

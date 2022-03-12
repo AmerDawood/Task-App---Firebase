@@ -301,7 +301,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           hintText: 'Choice your jop',
                           hintStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.w500,
                           ),
                           focusedBorder: OutlineInputBorder(
