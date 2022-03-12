@@ -1,16 +1,24 @@
-# tasks_app
+# e_commerce_firebase
 
 A new Flutter project.
 
-## Getting Started
+## Auth (Login - Register)
 
-This project is a starting point for a Flutter application.
+  <img src="https://github.com/AmerDawood/tasks_app/blob/master/image_git/login.png" alt="drawing" width="200"/>     <img src="https://github.com/AmerDawood/tasks_app/blob/master/image_git/register.png" alt="drawing" width="200"/>         <img src="https://github.com/AmerDawood/tasks_app/blob/master/image_git/forget.png" alt="drawing" width="200"/> 
 
-A few resources to get you started if this is your first Flutter project:
+## App Screen 
+ 
+ <img src="https://github.com/AmerDawood/tasks_app/blob/master/image_git/app_screen.png" alt="drawing" width="200"/>    
+ <img src="https://github.com/AmerDawood/tasks_app/blob/master/image_git/drawer.png" alt="drawing" width="200"/>     <img src="https://github.com/AmerDawood/tasks_app/blob/master/image_git/register_worker.png" alt="drawing" width="200"/>
+ 
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ 
