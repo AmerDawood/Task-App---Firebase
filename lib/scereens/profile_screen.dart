@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -99,14 +100,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fullName,
                           style: TextStyle(
                             fontSize: 25,
-                            color: Colors.black,
+                            color: Colors.brown,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Divider(),
-                        TextInProfile(text: 'Contact info'),
-                        TextInProfile(text: 'Email : ${email}'),
-                        TextInProfile(text: ' Phone number : ${phoneNumber}'),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15, top: 10, bottom: 5),
+                          child: Text(
+                            'CONTACT INFO',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color:Colors.red,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                        Text_information(
+                          text: 'Email : ',
+                          information: email,
+                        ),
+                        Text_information(
+                          text: 'Phone : ',
+                          information: phoneNumber,
+                        ),
+
                       SizedBox(height: 30,),
                         isSameUser?Container():Padding(
                           padding: const EdgeInsets.only(
@@ -159,7 +181,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, '/app_screen');
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -255,6 +279,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 }
 
+class Text_information extends StatelessWidget {
+  final String text;
+  final String information;
+  Text_information({
+    required this.text,
+    required this.information,
+});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 15, top: 10, bottom: 5),
+          child:RichText(
+            text: TextSpan(
+              text: text,
+              style:TextStyle(
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
+                fontSize: 25,
+              ),
+              children:[
+                TextSpan(text: information,
+                    style: TextStyle(
+                      fontSize: 19,
+                      color: Colors.brown,
+                      fontWeight: FontWeight.w500,
+                    )
+                ),
+              ],
+            ),
+          )
+        ),
+      ],
+    );
+  }
+}
+
 class CircelAvatarSocialImage extends StatelessWidget {
   final String imageUrl;
   final Color backColor;
@@ -296,27 +359,5 @@ class CircelAvatarSocialImage extends StatelessWidget {
   }
 }
 
-class TextInProfile extends StatelessWidget {
-  final String text;
 
-  TextInProfile({required this.text});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15, top: 10, bottom: 5),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

@@ -80,7 +80,17 @@ class _AppScreenState extends State<AppScreen> {
               );
             } else {
               return Center(
-                child: Text('No tasks found'),
+                child:Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.report_problem,color: Colors.grey,size: 70,),
+                    Text('No tasks found',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey,
+                    ),)
+                  ],
+                ),
               );
             }
           }
